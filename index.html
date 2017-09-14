@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Frame Mounting tool</title>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    </head>
+
+    
+    <body>
+        <div class="container">
+            <div class="row">
+                <table class="table">
+                    <thead>
+                        <tr><th>Bus Number</th><th>Destination</th><th>Time to leave</th></tr>
+                    </thead>
+                    <tbody id="times">
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    
+    </body>
+
+    <script>
+    let searchParams = new URLSearchParams(window.location.search);
+    let stopParams = searchParams.getAll('s');
+    let stops = [];
+    for (let i = 0; i < stopParams.length; i++) {
+        let parts = stopParams[i].split('!');
+        stops.push({ id: parts[0], delay: parts[1]});
+    }
+    function slowestFirst(a, b) {
+        return b.dataset.time - a.dataset.time;
+    }
+
+    $.each(stops, function(index, value) {
+        let stop = value;
+        $.getJSON("https://api.tfl.gov.uk/StopPoint/"+value.id+"/Arrivals",
+            function(data, textStatus, jqXHR) {
+                let times = $("#times")
+                $.each(data,
+                    function( index, value) {
+                        let lineName = value.lineName;
+                        let wait = Math.floor(value.timeToStation / 60);
+                        let destination = value.towards;
+                        let color;
+                        if (wait < stop.delay) {
+                            color = "danger";
+                        } else if (wait - 2 > stop.delay) {
+                            color = "success";
+                        } else {
+                            color = "warning";
+                        }
+                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td class='text-"+color+"'>"+(wait-stop.delay)+ "min (+"+stop.delay+"min walk)</td></tr>";
+
+                        times.append(tr);
+                        
+                    }
+                );
+
+                let sorted = times.find('tr').toArray().sort(slowestFirst);
+                times.empty();
+                let foundBuses = new Map();
+                for (let i = 0; i < sorted.length; i++) {
+                    let bus = sorted[i].dataset.bus;
+                    if (!foundBuses.has(bus)) {
+                        times.append(sorted[i]);
+                        foundBuses.set(bus, sorted[i]);
+                    }
+                }
+            }
+        );
+    });
+
+    </script>
+</html>
