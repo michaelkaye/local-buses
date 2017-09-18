@@ -31,6 +31,10 @@
 
     <script>
     let searchParams = new URLSearchParams(window.location.search);
+    let compassOffset = searchParams.get('o');
+    if (!compassOffset) {
+        compassOffset = 0;
+    }
     let stopParams = searchParams.getAll('s');
     let stops = [];
     for (let i = 0; i < stopParams.length; i++) {
@@ -59,7 +63,7 @@
                         } else {
                             color = "warning";
                         }
-                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+value.bearing+"deg)'></td><td class='text-"+color+"'>"+(wait-stop.delay)+ "min (+"+stop.delay+"min walk)</td></tr>";
+                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+(value.bearing+compassOffset)+"deg)'></td><td class='text-"+color+"'>"+(wait-stop.delay)+ "min (+"+stop.delay+"min walk)</td></tr>";
 
                         times.append(tr);
                         
