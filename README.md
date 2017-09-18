@@ -8,11 +8,11 @@ So, what this web UI does is take a set of bus stops and distances to walk to th
 
 ![Local Area Map](map.svg)
 
-Stop Codes can be found from the page URLs of various various tfl.gov.uk sites, for example (490000254T)[https://tfl.gov.uk/bus/stop/490000254T/waterloo-station/]
+Stop Codes can be found from the page URLs of various various tfl.gov.uk sites, for example [490000254T](https://tfl.gov.uk/bus/stop/490000254T/waterloo-station/)
 
 Then bookmark a link to the index.html page with query parameters `s=<stop code>!<time to get to stop>`, for example s=490000254T!5. These can be repeated to parse multiple stops.
 
 The page will remove any duplicate buses if you can leave later and get the same bus - for instance it would not suggest you get the red bus from stop 2, because you generally could get it from stop 4 which is closer.
 
-Visit an example at https://michaelkaye.github.io/local-buses/?s=490000254T!2&s=490000254K!4
+Visit an example at (https://michaelkaye.github.io/local-buses/?s=490000254T!2&s=490000254K!4)
 
