@@ -18,7 +18,7 @@
             <div class="row">
                 <table class="table">
                     <thead>
-                        <tr><th>Bus Number</th><th>Destination</th><th>Time to leave</th></tr>
+                        <tr><th>Bus Number</th><th>Destination</th><th><img src="rose.png"></th><th>Time to leave</th></tr>
                     </thead>
                     <tbody id="times">
                     </tbody>
@@ -59,7 +59,7 @@
                         } else {
                             color = "warning";
                         }
-                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td class='text-"+color+"'>"+(wait-stop.delay)+ "min (+"+stop.delay+"min walk)</td></tr>";
+                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+value.bearing+"deg)'></td><td class='text-"+color+"'>"+(wait-stop.delay)+ "min (+"+stop.delay+"min walk)</td></tr>";
 
                         times.append(tr);
                         
