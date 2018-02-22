@@ -29,7 +29,7 @@
     
     </body>
 
-    <script>
+<script>
     let searchParams = new URLSearchParams(window.location.search);
     let compassOffset = searchParams.get('o');
     if (!compassOffset) {
@@ -39,10 +39,16 @@
     let stops = [];
     for (let i = 0; i < stopParams.length; i++) {
         let parts = stopParams[i].split('!');
-        stops.push({ id: parts[0], delay: parts[1]});
+        stops.push({ id: parts[0], delay: parts[1] * 60});
     }
+
     function slowestFirst(a, b) {
         return b.dataset.time - a.dataset.time;
+    }
+
+    // round down to half minute intervals, display as 0.5
+    function fmt(time_in_seconds) {
+	    return Math.floor(time_in_seconds * 2  / 60) / 2;
     }
 
     $.each(stops, function(index, value) {
@@ -53,7 +59,7 @@
                 $.each(data,
                     function( index, value) {
                         let lineName = value.lineName;
-                        let wait = Math.floor(value.timeToStation / 60);
+                        let wait = Math.floor(value.timeToStation);
                         let destination = value.towards;
                         let color;
                         if (wait < stop.delay) {
@@ -63,7 +69,7 @@
                         } else {
                             color = "warning";
                         }
-                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+(value.bearing+compassOffset)+"deg)'></td><td class='text-"+color+"'>"+(wait-stop.delay)+ "min (+"+stop.delay+"min walk)</td></tr>";
+                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+(value.bearing+compassOffset)+"deg)'></td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td></tr>";
 
                         times.append(tr);
                         
@@ -84,5 +90,5 @@
         );
     });
 
-    </script>
+</script>
 </html>
