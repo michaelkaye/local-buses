@@ -82,9 +82,10 @@
                 for (let i = 0; i < sorted.length; i++) {
                     let bus = sorted[i].dataset.bus;
                     if (!foundBuses.has(bus)) {
-                        times.append(sorted[i]);
-                        foundBuses.set(bus, sorted[i]);
-                    }
+		        sorted[i].css('background-color', 'gray50');
+		    }
+                    times.append(sorted[i]);
+                    foundBuses.set(bus, sorted[i]);
                 }
             }
         );
