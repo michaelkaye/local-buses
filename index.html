@@ -72,7 +72,6 @@
                         let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+(value.bearing+compassOffset)+"deg)'></td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td></tr>";
 
                         times.append(tr);
-                        
                     }
                 );
 
@@ -82,9 +81,10 @@
                 for (let i = 0; i < sorted.length; i++) {
                     let bus = sorted[i].dataset.bus;
                     if (!foundBuses.has(bus)) {
-                        times.append(sorted[i]);
-                        foundBuses.set(bus, sorted[i]);
-                    }
+                        sorted[i].style.backgroundColor = 'gray50';
+		    }
+                    times.append(sorted[i]);
+                    foundBuses.set(bus, sorted[i]);
                 }
             }
         );
