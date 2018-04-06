@@ -43,19 +43,18 @@
     }
 
     function slowestFirst(a, b) {
-        return b.dataset.time - a.dataset.time;
+        return b.delay - a.delay;
     }
 
     // round down to half minute intervals, display as 0.5
     function fmt(time_in_seconds) {
 	    return Math.floor(time_in_seconds * 2  / 60) / 2;
     }
-
+    let transports = [];
     $.each(stops, function(index, value) {
         let stop = value;
         $.getJSON("https://api.tfl.gov.uk/StopPoint/"+value.id+"/Arrivals",
             function(data, textStatus, jqXHR) {
-                let times = $("#times")
                 $.each(data,
                     function( index, value) {
                         let lineName = value.lineName;
@@ -70,20 +69,24 @@
                             color = "warning";
                         }
                         let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+(value.bearing+compassOffset)+"deg)'></td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td></tr>";
-
-                        times.append(tr);
+			let thing = {
+                            vehicleId : value.vehicleId,
+                            delay : (wait -stop.delay),
+                            element : tr
+			};
+                        transports.push(thing);
                     }
                 );
 
-                let sorted = times.find('tr').toArray().sort(slowestFirst);
+                let sorted = transports.sort(slowestFirst);
+                let times = $('#times');
                 times.empty();
                 let foundBuses = new Map();
                 for (let i = 0; i < sorted.length; i++) {
-                    let bus = sorted[i].dataset.bus;
+                    let bus = sorted[i].vehicleId;
                     if (!foundBuses.has(bus)) {
-                        sorted[i].style.backgroundColor = 'gray50';
-		    }
-                    times.append(sorted[i]);
+                        times.append(sorted[i].element);
+                    }
                     foundBuses.set(bus, sorted[i]);
                 }
             }
