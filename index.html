@@ -68,7 +68,14 @@
                         } else {
                             color = "warning";
                         }
-                        let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+value.stationName+" to "+destination+"</td><td><img src='arrow.png' style='transform: rotate("+(value.bearing+compassOffset)+"deg)'></td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td></tr>";
+                        let loc;
+                        if (value.modeName == "bus") {
+			   loc = value.destinationName+"<br/>"+value.stationName+" <b>"+value.platformName+"";
+			} else {
+			   loc = value.platformName+"<br/>"+value.stationName.replace(" Underground Station","")+" to "+destination;
+			}
+			
+			let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+loc+"</td><td><img src='arrow.png' style='transform: rotate("+(value.bearing+compassOffset)+"deg)'></td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td></tr>";
 			let thing = {
                             vehicleId : value.vehicleId,
                             delay : (wait -stop.delay),
