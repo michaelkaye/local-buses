@@ -50,6 +50,35 @@
     function fmt(time_in_seconds) {
 	    return Math.floor(time_in_seconds * 2  / 60) / 2;
     }
+
+
+    function notifications(naptanId, vehicleId, delay) {
+    $.getJSON("https://api.tfl.gov.uk/StopPoint/"+naptanId+"/Arrivals",
+        function(data, textStatus, jqXHR) {
+	    let utterance;
+	    $.each(data,
+	       function(index, value) {
+	          if (value.vehicleId == vehicleId) {
+	       	     timeToLeave = value.timeToStation - delay;
+		     if (timeToLeave > 60) {
+		  	utterance = new SpeechSynthesisUtterance("Leave in "+fmt(timeToLeave)+" minutes");
+			window.setTimeout(notifications, 60*1000, naptanId, vehicleId, delay);
+		     } else if (timeToLeave > 0) {
+		  	utterance = new SpeechSynthesisUtterance("Leave now.");
+		     } else {
+		  	utterance = new SpeechSynthesisUtterance("Leave and run now.");
+		     }
+		  } else {
+		  }
+	       }
+	       );
+	    if (utterance == null) 
+		    utterance = new SpeechSynthesisUtterance("Tracking Lost");
+            window.speechSynthesis.speak(utterance);
+	}
+	);
+    }
+
     let transports = [];
     $.each(stops, function(index, value) {
         let stop = value;
@@ -75,7 +104,7 @@
 			   loc = value.platformName+"<br/>"+value.stationName.replace(" Underground Station","")+" to "+destination;
 			}
 			
-			let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+loc+"</td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td></tr>";
+			let tr = "<tr onclick='notifications(\""+value.naptanId+"\",\""+value.vehicleId+"\","+stop.delay+");' data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+loc+"</td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td></tr>";
 			let thing = {
                             vehicleId : value.vehicleId,
                             delay : (wait -stop.delay),
