@@ -60,13 +60,13 @@
 	       function(index, value) {
 	          if (value.vehicleId == vehicleId) {
 	       	     timeToLeave = value.timeToStation - delay;
-		     if (timeToLeave > 60) {
-		  	utterance = new SpeechSynthesisUtterance("Leave in "+fmt(timeToLeave)+" minutes");
+		     if (timeToLeave > 120) {
+		  	utterance = new SpeechSynthesisUtterance("Leave in "+fmt(timeToLeave)+" minutes for "+value.lineName+" to "+value.towards);
 			window.setTimeout(notifications, 60*1000, naptanId, vehicleId, delay);
 		     } else if (timeToLeave > 0) {
-		  	utterance = new SpeechSynthesisUtterance("Leave now.");
+		  	utterance = new SpeechSynthesisUtterance("Leave now for " + value.lineName+" to "+value.towards + " from " + value.stationName ); ;
 		     } else {
-		  	utterance = new SpeechSynthesisUtterance("Leave and run now.");
+		  	utterance = new SpeechSynthesisUtterance("You are "+ 0-timeToLeave+" seconds late for " + value.lineName+ " to "+ value.towards);
 		     }
 		  } else {
 		  }
