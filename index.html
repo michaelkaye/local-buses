@@ -32,6 +32,7 @@
 <script>
     let searchParams = new URLSearchParams(window.location.search);
     let compassOffset = searchParams.get('o');
+    let speechNotification = null;
     if (!compassOffset) {
         compassOffset = 0;
     }
@@ -51,6 +52,12 @@
 	    return Math.floor(time_in_seconds * 2  / 60) / 2;
     }
 
+    function newNotifications(naptanId, vehicheId, delay) {
+    	console.log("Clearing current notifications");
+	if (speechNotification != null)
+	    window.clearTimeout(speechNotification);
+	notifications(naptanId, vehicleId, delay);
+    }
 
     function notifications(naptanId, vehicleId, delay) {
     console.log("Beginning notification pool for "+naptanId);
@@ -64,7 +71,7 @@
 		     if (timeToLeave > 120) {
 		  	utterance = new SpeechSynthesisUtterance("Leave in "+fmt(timeToLeave)+" minutes for "+value.lineName+" to "+value.towards);
 			console.log("Setting 60s timeout for update");
-			window.setTimeout(notifications, 60*1000, naptanId, vehicleId, delay);
+			speechNotification = window.setTimeout(notifications, 60*1000, naptanId, vehicleId, delay);
 		     } else if (timeToLeave > 0) {
 		  	utterance = new SpeechSynthesisUtterance("Leave now for " + value.lineName+" to "+value.towards + " from " + value.stationName ); ;
 		     } else {
@@ -106,7 +113,7 @@
 			   loc = value.platformName+"<br/>"+value.stationName.replace(" Underground Station","")+" to "+destination;
 			}
 			
-			    let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+loc+"</td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td><td><img src='timer.png' onclick='notifications(\""+value.naptanId+"\",\""+value.vehicleId+"\","+stop.delay+");'></td></tr>";
+			    let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+loc+"</td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td><td><img src='timer.png' onclick='newNotifications(\""+value.naptanId+"\",\""+value.vehicleId+"\","+stop.delay+");'></td></tr>";
 			let thing = {
                             vehicleId : value.vehicleId,
                             delay : (wait -stop.delay),
