@@ -52,7 +52,7 @@
 	    return Math.floor(time_in_seconds * 2  / 60) / 2;
     }
 
-    function newNotifications(naptanId, vehicheId, delay) {
+    function newNotifications(naptanId, vehicleId, delay) {
     	console.log("Clearing current notifications");
 	if (speechNotification != null)
 	    window.clearTimeout(speechNotification);
@@ -113,7 +113,7 @@
 			   loc = value.platformName+"<br/>"+value.stationName.replace(" Underground Station","")+" to "+destination;
 			}
 			
-			    let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+loc+"</td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td><td><img src='timer.png' onclick='newNotifications(\""+value.naptanId+"\",\""+value.vehicleId+"\","+stop.delay+");'></td></tr>";
+			    let tr = "<tr data-bus='"+value.vehicleId+"' data-time='"+(wait-stop.delay)+"'><td>"+lineName+"</td><td>"+loc+"</td><td class='text-"+color+"'>"+fmt(wait-stop.delay)+ "min (+"+fmt(stop.delay)+"min walk)</td><td><img src='timer.png' height='16' onclick='newNotifications(\""+value.naptanId+"\",\""+value.vehicleId+"\","+stop.delay+");'></td></tr>";
 			let thing = {
                             vehicleId : value.vehicleId,
                             delay : (wait -stop.delay),
